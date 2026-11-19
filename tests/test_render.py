@@ -22,7 +22,10 @@ def make_clip(path, seconds, audio=True, hdr=False):
         args += ["-f", "lavfi", "-i", f"sine=f=440:d={seconds}"]
     args += ["-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p"]
     if hdr:
-        args += ["-color_trc", "smpte2084", "-color_primaries", "bt2020", "-colorspace", "bt2020nc"]
+        # Write the HDR10 colour tags into the H.264 stream itself; the -color_* options
+        # alone are not written by every ffmpeg/x264 version.
+        args += ["-color_trc", "smpte2084", "-color_primaries", "bt2020", "-colorspace", "bt2020nc",
+                 "-bsf:v", "h264_metadata=transfer_characteristics=16:colour_primaries=9:matrix_coefficients=9"]
     if audio:
         args += ["-c:a", "aac"]
     subprocess.run(args + [str(path)], check=True)
