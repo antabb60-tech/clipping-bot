@@ -1,0 +1,42 @@
+# clipbot edit plan. Full reference: docs/PLAN_FORMAT.md
+title: "My video idea"
+footage_dir: ../footage          # folder with your Xbox recordings, relative to this file
+
+voice: en-US-AndrewNeural        # run `clipbot voices` for more
+rate: "+8%"                      # speaking speed
+tts: edge                        # edge (free, online) | sapi (Windows, offline) | piper | silent
+
+hook: "Text that grabs them in second one"   # shown big at the top for the first 2s
+
+segments:
+  - id: open
+    file: clip1.mp4
+    start: "0:05"
+    end: "0:11"
+    vo: "First voiceover line. Keep it short and punchy."
+    text: "OPTIONAL LABEL"
+  - id: point1
+    file: clip1.mp4
+    start: "0:40"
+    end: "0:52"
+    vo: "Second line explains the first surprising thing."
+    crop: crop                   # crop = fill the screen; blur = full picture over a blurred copy
+    focus: 0.5                   # 0 = left edge, 1 = right edge (crop mode)
+  - id: payoff
+    file: clip2.mp4
+    start: "1:10"
+    end: "1:18"
+    vo: "Payoff line, then ask a question to drive comments."
+
+platforms:
+  tiktok:
+    segments: [open, point1, payoff]
+    caption: "Did you know this?"
+    hashtags: [gta6, gaming]
+  shorts:
+    segments: [open, payoff]
+    title: "Short YouTube title"
+    hashtags: [gta6, shorts]
+  x:
+    segments: [open, payoff]
+    caption: "Post text for X"
