@@ -1,0 +1,73 @@
+# Example idea from the launch-week research: witnesses remember your outfit.
+# Put your recordings in ../footage (or change footage_dir) and update the
+# file names and timestamps to match what you actually recorded.
+title: "GTA 6 witnesses remember your outfit"
+footage_dir: ../footage
+voice: en-US-AndrewNeural
+rate: "+10%"
+hook: "GTA 6 cops remember what you WEAR"
+
+defaults:
+  crop: blur
+  zoom: 1.25          # blur mode: make the middle picture a bit bigger
+
+segments:
+  - id: open
+    file: witness_run1.mp4
+    start: "0:04"
+    end: "0:09"
+    vo: "In GTA 6, witnesses actually remember what you were wearing."
+    text: "WITNESS SYSTEM"
+  - id: crime
+    file: witness_run1.mp4
+    start: "0:21"
+    end: "0:30"
+    vo: "I robbed a store in a bright red jacket, and a guy across the street saw everything."
+    violent: true
+  - id: report
+    file: witness_run1.mp4
+    start: "0:45"
+    end: "0:53"
+    vo: "Ten seconds later, the police description said red jacket. Not my face. My jacket."
+    crop: crop
+    focus: [[0, 0.35], [6, 0.6]]   # slow pan toward the right side
+    text: {say: "THEY DESCRIBED THE JACKET", start: 1.5}
+  - id: test
+    file: witness_run2.mp4
+    start: "1:02"
+    end: "1:12"
+    vo: "So I ran into a clothing store, swapped to a plain grey hoodie, and walked right past them."
+  - id: result
+    file: witness_run2.mp4
+    start: "1:30"
+    end: "1:40"
+    vo: "Nothing. They looked straight at me and kept walking."
+  - id: catch
+    file: witness_run2.mp4
+    start: "2:05"
+    end: "2:16"
+    vo: "But here's the catch. Go back in the red jacket, and they recognize you instantly."
+  - id: tattoo
+    file: witness_run3.mp4
+    start: "0:30"
+    end: "0:42"
+    vo: "And it isn't just clothes. Hats, masks, even the car you drove away in all get remembered."
+  - id: outro
+    file: witness_run3.mp4
+    start: "1:00"
+    end: "1:08"
+    vo: "Would you change outfits after every crime? Tell me in the comments."
+
+platforms:
+  tiktok:            # must be over 1 minute
+    segments: [open, crime, report, test, result, catch, tattoo, outro]
+    caption: "GTA 6 witnesses remember your OUTFIT, not your face 👀"
+    hashtags: [gta6, gta, gtavi, gaming, fyp]
+  shorts:            # 20-40s; violent clip kept after the 7 second mark
+    segments: [open, report, test, result]
+    hook: "Change your jacket. Lose the cops."
+    title: "GTA 6 cops track your OUTFIT 😳 #gta6"
+    hashtags: [gta6, shorts]
+  x:
+    segments: [open, report, test, result]
+    caption: "GTA 6 witnesses remember your outfit. Swapping your jacket actually works."

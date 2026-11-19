@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clipbot"
+version = "0.1.0"
+description = "Turn gameplay recordings + a YAML edit plan into vertical TikTok / Shorts / X videos. Free tools only."
+requires-python = ">=3.10"
+dependencies = [
+  "pyyaml>=6.0",
+  "edge-tts>=7.0",
+]
+
+[project.optional-dependencies]
+whisper = ["faster-whisper>=1.0"]
+dev = ["pytest>=8"]
+
+[project.scripts]
+clipbot = "clipbot.cli:main"
+
+[tool.setuptools]
+packages = ["clipbot"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.setuptools.package-data]
+clipbot = ["template.yaml"]

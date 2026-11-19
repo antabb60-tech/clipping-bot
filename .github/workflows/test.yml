@@ -1,0 +1,56 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  windows:
+    # The tool is built for Windows first, so this is the job that matters.
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install FFmpeg
+        run: choco install ffmpeg -y --no-progress
+      - name: Run setup.ps1 (same script Anthony runs)
+        shell: pwsh
+        run: |
+          $env:Path = [Environment]::GetEnvironmentVariable("Path","Machine") + ";" + $env:Path
+          ./setup.ps1
+      - name: Tests (including Windows voice and free Edge voice)
+        shell: pwsh
+        env:
+          CLIPBOT_NETWORK_TESTS: "1"
+        run: |
+          $env:Path = [Environment]::GetEnvironmentVariable("Path","Machine") + ";" + $env:Path
+          .venv\Scripts\python.exe -m pip install pytest --quiet
+          .venv\Scripts\python.exe -m pytest -v
+      - name: Render the example with the free Edge voice
+        shell: pwsh
+        run: |
+          $env:Path = [Environment]::GetEnvironmentVariable("Path","Machine") + ";" + $env:Path
+          .venv\Scripts\python.exe tests\make_demo_footage.py footage
+          .\clipbot.cmd render examples\witness-memory.yaml -p shorts
+      - uses: actions/upload-artifact@v4
+        with:
+          name: demo-render
+          path: out/*/*.mp4
+          retention-days: 7
+
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: pip install -e ".[dev]"
+      - run: pytest -v
