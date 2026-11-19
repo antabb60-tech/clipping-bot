@@ -83,20 +83,23 @@ def media_duration(path: Path) -> float:
     return MediaInfo(path).duration
 
 
-_filters_cache: set[str] | None = None
+_filters_cache: dict[str, bool] = {}
 
 
 def has_filter(name: str) -> bool:
-    global _filters_cache
-    if _filters_cache is None:
-        proc = subprocess.run(["ffmpeg", "-hide_banner", "-filters"], capture_output=True, text=True)
-        names = set()
-        for line in proc.stdout.splitlines():
-            parts = line.split()
-            if len(parts) >= 2 and len(parts[0]) == 3:
-                names.add(parts[1])
-        _filters_cache = names
-    return name in _filters_cache
+    """True if this ffmpeg build has the named filter.
+
+    Asks ffmpeg directly ("-h filter=NAME") instead of parsing "-filters",
+    whose column layout differs between ffmpeg versions.
+    """
+    if name not in _filters_cache:
+        proc = subprocess.run(
+            ["ffmpeg", "-hide_banner", "-h", f"filter={name}"],
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+        )
+        out = (proc.stdout + proc.stderr).strip()
+        _filters_cache[name] = out.startswith(f"Filter {name}")
+    return _filters_cache[name]
 
 
 def _q(a: str) -> str:
